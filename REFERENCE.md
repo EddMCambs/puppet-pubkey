@@ -110,6 +110,7 @@ The following parameters are available in the `pubkey::ssh` defined type:
 * [`comment`](#-pubkey--ssh--comment)
 * [`size`](#-pubkey--ssh--size)
 * [`tags`](#-pubkey--ssh--tags)
+* [`options`](#-pubkey--ssh--options)
 * [`export_key`](#-pubkey--ssh--export_key)
 * [`path`](#-pubkey--ssh--path)
 * [`hostname`](#-pubkey--ssh--hostname)
@@ -184,6 +185,14 @@ Default value: `undef`
 Data type: `Optional[Array[String]]`
 
 optional tags added to the exported key
+
+Default value: `undef`
+
+##### <a name="-pubkey--ssh--options"></a>`options`
+
+Data type: `Optional[Array[String]]`
+
+optional ssh key options for the exported key; see sshd(8) for possible values.
 
 Default value: `undef`
 

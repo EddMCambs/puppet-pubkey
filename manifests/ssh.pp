@@ -15,6 +15,7 @@
 # @param path standard unix path to look for ssh-keygen
 # @param hostname that will be part of exported resource
 # @param separator A character for user and type auto-detection (default: '_')
+# @param options Array of options added to the exported ssh_authorized_key
 #
 # @example
 #   pubkey::ssh { 'john_rsa': }
@@ -30,6 +31,7 @@
 #  pubkey::ssh { 'bob_ed25519':
 #    user        => 'bob', # auto-detected from title
 #    target_user => 'deploy', # user account under which authorized key will be stored
+#    options     => ['restrict']
 #    tags        => ['users'],
 #  }
 define pubkey::ssh (
@@ -46,6 +48,7 @@ define pubkey::ssh (
   Optional[Array[String]]    $tags = undef,
   Boolean                    $export_key = true,
   String[1]                  $separator = '_',
+  Optional[Array[String]]    $options = undef,
 ) {
   # try to auto-detect username and key type
   if empty($type) or empty($user) {
@@ -127,11 +130,12 @@ define pubkey::ssh (
       if 'type' in $_key and 'key' in $_key {
         if !empty($_key['type']) and !empty($_key['key']) {
           @@ssh_authorized_key { "${title}@${hostname}":
-            ensure => present,
-            user   => $_target_user,
-            type   => $_key['type'],
-            key    => $_key['key'],
-            tag    => $tags,
+            ensure  => present,
+            user    => $_target_user,
+            type    => $_key['type'],
+            key     => $_key['key'],
+            tag     => $tags,
+            options => $options,
           }
         } else {
           warning("ssh_authorized_key type can't be empty: ${_key}")
