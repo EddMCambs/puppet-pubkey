@@ -22,6 +22,7 @@ Auto-detection expects name in format `{username}_{type}`.
  - `user` account name under which we will store the ssh key
  - `type` ssh key type one of: `dsa`, `rsa`, `ecdsa`, `ed25519`, `ecdsa-sk`, `ed25519-sk`
  - `home` user's home directory, assuming .ssh is located in $HOME/.ssh
+ - `key_path` folder to create the key in (defualts to $home/.ssh)
  - `prefix` custom key file prefix for the ssh key file (default: `id`)
  - `comment` ssh key's comment
  - `size` number of bits for generated ssh key
@@ -43,10 +44,12 @@ pubkey::ssh { 'alice_key':
   user       => 'alice',
   type       => 'ed25519',
   home       => '/home/alice',
+  key_path   => '/opt/borg_keys'
   comment    => 'alice_ed25519@foo.bar',
   hostname   => 'foo'
   export_key => false,
   tags       => ['tag_users', 'bar'],
+  options    => ['restrict'],
 }
 ```
 The key will be exported as `alice_key@foo` (suffix is taken from the `hostname` parameter). In order to import the key on other machine use e.g.:

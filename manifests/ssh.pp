@@ -7,6 +7,7 @@
 # @param target_user account name under which we will store the authorized key (by default same as `user`)
 # @param type ssh key type one of: 'dsa', 'rsa', 'ecdsa', 'ed25519', 'ecdsa-sk', 'ed25519-sk'
 # @param home user's home directory, assuming .ssh is located in $HOME/.ssh
+# @param key_path folder to create the key in (defaults to $home/.ssh)
 # @param prefix custom key file prefix for the ssh key file (default: 'id')
 # @param comment ssh key's comment
 # @param size number of bits for generated ssh key
@@ -41,6 +42,7 @@ define pubkey::ssh (
   Optional[Pubkey::Type]     $type = undef,
   Stdlib::AbsolutePath       $path = $facts['path'],
   Optional[Stdlib::UnixPath] $home = undef,
+  Optional[Stdlib::UnixPath] $key_path = undef,
   Optional[String[1]]        $prefix = undef,
   Optional[String[1]]        $comment = undef,
   Optional[Integer]          $size = undef,
@@ -84,6 +86,13 @@ define pubkey::ssh (
     default => $home,
   }
 
+  $_key_path = $key_path ? {
+    undef   => $_user ? {
+      default => "${_home}/.ssh",
+    },
+    default => $key_path,
+  }
+
   $_comment = $comment ? {
     undef   => shellquote($title),
     default => shellquote($comment)
@@ -97,8 +106,8 @@ define pubkey::ssh (
   # convert e.g. ecdsa-sk to ecdsa_sk
   $key_file = regsubst($_type, '\-','_',)
 
-  $privkey_path = "${_home}/.ssh/${_prefix}_${key_file}"
-  $pubkey_path = "${_home}/.ssh/${_prefix}_${key_file}.pub"
+  $privkey_path = "${_key_path}/${_prefix}_${key_file}"
+  $pubkey_path = "${_key_path}/${_prefix}_${key_file}.pub"
 
   if $generate {
     pubkey::keygen { "keygen-${title}":
