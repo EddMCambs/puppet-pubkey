@@ -36,7 +36,8 @@ Facter.add(:pubkey) do
       File.foreach(keys) do |line|
         if line.match? regexp
           m = line.match regexp
-          res[m[1]] = pubkey_fetch_key(m[2])
+          keyfetch = pubkey_fetch_key(m[2])
+          res[keyfetch['comment']] = pubkey_fetch_key(m[2])
         end
       end
     end
