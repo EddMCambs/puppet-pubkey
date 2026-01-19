@@ -37,7 +37,8 @@ Facter.add(:pubkey) do
         if line.match? regexp
           m = line.match regexp
           keyfetch = pubkey_fetch_key(m[2])
-          res[keyfetch['comment']] = pubkey_fetch_key(m[2])
+          res[m[1]] ||= {}
+          res[m[1]][keyfetch['comment']] = pubkey_fetch_key(m[2])
         end
       end
     end
