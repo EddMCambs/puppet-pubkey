@@ -134,7 +134,7 @@ define pubkey::ssh (
     # Load ssh public key for given local user
     # NOTE: we can't access remote disk from a compile server
     # and exported resources doesn't support Deferred objects
-    if 'pubkey' in $facts and $_user in $facts['pubkey'] and $_comment in $facts['pubkey']['$_user'] {
+    if 'pubkey' in $facts and $_user in $facts['pubkey'] and $_comment in $facts['pubkey'][$_user] {
       $_key = $facts['pubkey'][$_user][$_comment]
       if 'type' in $_key and 'key' in $_key {
         if !empty($_key['type']) and !empty($_key['key']) {
