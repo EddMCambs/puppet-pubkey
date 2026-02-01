@@ -9,8 +9,8 @@ def pubkey_fetch_key(path)
   cert = "#{path[0...-4]}-cert.pub"
   return key unless File.file?(cert)
   expiry = Facter::Core::Execution.execute("ssh-keygen -L -f #{cert} 2>/dev/null | grep 'Valid:' | awk '{print $5}' | date -f - +%s ")
-  key['expiry'] = expiry.empty? ? -1 : cert.to_i
-  key
+  key['expiry'] = expiry.empty? ? -1 : expiry.to_i
+  return key
 end
 
 def pubkey_parse_ssh_key(str)
